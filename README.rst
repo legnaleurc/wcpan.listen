@@ -2,7 +2,7 @@ wcpan.listen
 ============
 
 
-.. highlight:: python
+.. code:: python
 
     from tornado.httpserver import HTTPServer
     from tornado.ioloop import IOLoop
