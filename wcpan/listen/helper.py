@@ -5,6 +5,7 @@ import os
 import pwd
 import re
 import socket
+import sys
 
 
 class TCPEndpoint(object):
@@ -81,12 +82,13 @@ def verify_ipv4(ipv4):
 
 
 def verify_port(port):
-    m = re.match(r'^[1-9]\d{0,4}$', port)
-    if m:
-        m = int(port)
-        if 1 <= m < 65536:
-            return True
-    return False
+    if isinstance(port, int):
+        m = port
+    else:
+        m = re.match(r'^[1-9]\d{0,4}$', port)
+        if m:
+            m = int(port)
+    return 1 <= m < 65536
 
 
 _DEFAULT_BACKLOG = 128
