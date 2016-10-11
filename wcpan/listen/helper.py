@@ -6,19 +6,20 @@ import pwd
 import re
 import socket
 import sys
+from typing import Generator, Iterable, List, Type
 
 
 class TCPEndpoint(object):
 
-    def __init__(self, interface, port):
+    def __init__(self, interface: str, port: int) -> None:
         self._interface = interface
         self._port = port
 
-    def __enter__(self):
+    def __enter__(self) -> List[socket.socket]:
         self._sockets = bind_sockets(self._port, self._interface, socket.AF_INET)
         return self._sockets
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, type: Type[Exception], value: Exception, traceback: 'traceback') -> None:
         for skt in self._sockets:
             skt.shutdown(socket.SHUT_WR)
             skt.close()
@@ -26,26 +27,26 @@ class TCPEndpoint(object):
 
 class UNIXEndpoint(object):
 
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         self._path = path
         self._user = 'www-data'
         self._group = 'www-data'
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         uid = pwd.getpwnam(self._user).pw_uid
         gid = grp.getgrnam(self._group).gr_gid
         self._socket = bind_unix_socket(self._path)
         os.chown(self._path, uid, gid)
         return [self._socket]
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, type: Type[Exception], value: Exception, traceback: 'traceback') -> None:
         self._socket.shutdown(socket.SHUT_WR)
         self._socket.close()
         os.remove(self._path)
 
 
 @contextlib.contextmanager
-def create_sockets(listen_list):
+def create_sockets(listen_list: Iterable[Union[int, str]]) -> Generator[List[socket.socket], None, None]:
     endpoint_list = (verify_listen_string(_) for _ in listen_list)
     with contextlib.ExitStack() as stack:
         sockets = (stack.enter_context(_) for _ in endpoint_list)
