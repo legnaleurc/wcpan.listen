@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
         name='wcpan.listen',
-        version='1.0.0.dev2',
+        version='1.0.0',
         author='Wei-Cheng Pan',
         author_email='legnaleurc@gmail.com',
         url='https://github.com/legnaleurc/wcpan.listen',
