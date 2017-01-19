@@ -6,7 +6,7 @@ import pwd
 import re
 import socket
 import sys
-from typing import Generator, Iterable, List, Type
+from typing import Generator, Iterable, List, Type, Union
 
 
 class TCPEndpoint(object):
