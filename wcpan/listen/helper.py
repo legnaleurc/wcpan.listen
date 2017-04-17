@@ -87,8 +87,9 @@ def verify_port(port):
         m = port
     else:
         m = re.match(r'^[1-9]\d{0,4}$', port)
-        if m:
-            m = int(port)
+        if not m:
+            return False
+        m = int(port)
     return 1 <= m < 65536
 
 
